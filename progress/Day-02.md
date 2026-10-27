@@ -1,6 +1,6 @@
 # Day 2 — Simulator and Connection Behavior
 
-**Session date:** [Enter the date when you work on this milestone]
+**Session date:** [Enter the date]
 **Status:** Not started
 
 ## Objective
