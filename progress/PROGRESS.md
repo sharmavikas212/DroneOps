@@ -27,8 +27,8 @@ and potentially Hilt.
 
 Read these files to resume development:
 
-- [Day 1 — Basic Telemetry Dashboard](progress/Day-01.md)
-- [Day 2 — Simulator and Connection Behavior](progress/Day-02.md)
+- [Day 1 — Basic Telemetry Dashboard](Day-01.md)
+- [Day 2 — Simulator and Connection Behavior](Day-02.md)
 
 ## How to Resume
 
