@@ -43,6 +43,8 @@
     *Fix:* Initialized random targets outside the main loop.
 *   *Issue:* The initial connection state hung indefinitely if the drone was turned off/out of range on launch, as the watchdog only started *after* the first reading.
     *Fix:* Called `resetWatchdog()` immediately before the `.collect()` block to enforce a strict timeout on the initial connection attempt.
+*   *Issue:* The battery reaching 0% didn't trigger a connection loss because the simulation loop kept emitting 0% readings.
+    *Fix:* Broke the while loop when internalBattery <= 0.0 to simulate the drone powering down.
 
 **Incomplete work:**
 *   None.
