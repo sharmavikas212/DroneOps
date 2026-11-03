@@ -73,6 +73,11 @@ class SimulatedTelemetrySource : TelemetrySource {
                 )
             )
 
+            // Exit the loop when battery is dead to simulate power loss
+            if (internalBattery <= 0.0) {
+                break
+            }
+
             if (Random.nextFloat() < 0.05f) { // 5% chance to drop signal
                 delay(5_000.milliseconds) // Sleep for 5 seconds, triggering the ViewModel's watchdog
             }
