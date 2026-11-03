@@ -1,106 +1,51 @@
-# Day 2 — Simulator and Connection Behavior
+# Day 2: Realistic Telemetry and Connection Handling
 
-**Session date:** [Enter the date]
-**Status:** Not started
+**Date worked on:** 2026-11-03
+**Status:** Completed
+**Objective:** Improve the realism of the simulated telemetry and implement explicit connection state handling, including disconnections and reconnections.
 
-## Objective
+### Relevant Context & Files
+*   `SimulatedTelemetrySource.kt`
+*   `DroneDashboardUiState.kt`
+*   `DroneDashboardViewModel.kt`
+*   `DroneDashboardScreen.kt`
 
-Improve the realism of the telemetry simulator and make connection
-behavior more explicit.
+### Step-by-Step Tasks
+*   [x] Review the existing telemetry model and simulator logic.
+*   [x] Improve simulated battery behavior (depletion based on load, auto-land at 0%).
+*   [x] Implement kinematic smoothing for altitude and speed using linear interpolation.
+*   [x] Implement basic geographic coordinate shifts (GPS displacement) based on speed and heading.
+*   [x] Replace boolean `isConnected` with explicit `ConnectionState` enum (`Connecting`, `Connected`, `Disconnected`).
+*   [x] Implement a 3-second watchdog timer in the ViewModel using coroutine jobs to handle connection timeouts.
+*   [x] Simulate temporary connection loss (5% chance of a 5-second pause) in the data source.
+*   [x] Update Compose UI to handle explicit connection states and retain last-known telemetry when disconnected.
 
-Do not add new frameworks just for the sake of adding them.
-Focus on improving the behavior of the existing implementation.
+### Verification and Completion
+*   [x] App launches and initially shows "Connecting...".
+*   [x] Telemetry values update smoothly without erratic jumps.
+*   [x] Disconnection state triggers automatically when the stream pauses, freezing the last known values on screen.
+*   [x] Reconnection happens seamlessly when the stream resumes.
 
-## Step 1 — Review the Current Implementation
+### Learning Notes
 
-Read:
-- SimulatedTelemetrySource.kt
-- TelemetrySource.kt
-- DroneTelemetryRepository.kt
-- DroneDashboardViewModel.kt
-- DroneDashboardUiState.kt
+**Concepts understood:**
+*   Using linear interpolation (lerp) to smoothly transition data values within a Flow loop.
+*   Calculating basic geographic coordinate shifts using speed and trigonometric functions.
+*   Using cancellable Coroutine Jobs (`Job.cancel()`) to build a resetting watchdog timer for debouncing/timeouts.
+*   Designing UI state structures that cleanly decouple network connection status from the core data payload.
 
-Make sure you understand how telemetry travels from the simulator
-to the screen.
+**Decisions made:**
+*   Opted for the explicit `Job.cancel()` approach for the watchdog timer rather than a continuous timestamp loop, as it makes the intent highly readable and idiomatic.
+*   Decided the app (ViewModel) should declare the disconnect locally based on radio silence rather than waiting for an explicit "disconnected" event from the stream.
 
-## Step 2 — Improve the Simulator
+**Problems encountered:**
+*   *Issue:* The simulation initially paused on the first tick because the target and current values started identically. 
+    *Fix:* Initialized random targets outside the main loop.
+*   *Issue:* The initial connection state hung indefinitely if the drone was turned off/out of range on launch, as the watchdog only started *after* the first reading.
+    *Fix:* Called `resetWatchdog()` immediately before the `.collect()` block to enforce a strict timeout on the initial connection attempt.
 
-Current problems:
-- Battery remains at zero.
-- GPS coordinates never change.
-- Altitude and speed change randomly without much realism.
+**Incomplete work:**
+*   None.
 
-Tasks:
-- Decide how battery depletion should behave.
-- Make altitude and speed changes more plausible.
-- Consider introducing small GPS movements.
-- Keep the simulation simple enough to understand and test.
-
-## Step 3 — Model Connection Behavior
-
-The current screen marks the drone connected when telemetry arrives.
-
-Design clearer behavior for:
-- Initial connection
-- Active telemetry
-- Temporary disconnection
-- Reconnection
-- Error conditions
-
-Decide how to represent these states in the application.
-
-Do not assume that normal Flow completion always means disconnection.
-
-## Step 4 — Simulate Disconnection and Recovery
-
-If time permits:
-- Simulate a temporary loss of telemetry.
-- Display a disconnected state.
-- Decide whether to retain the last-known telemetry.
-- Restore telemetry and show reconnection.
-
-Keep connection status separate from the last telemetry reading.
-
-## Step 5 — Verify Behavior
-
-Manually check:
-- Telemetry continues updating when connected.
-- Battery behavior is sensible.
-- Disconnection is visible.
-- Last-known readings behave as intended.
-- Reconnection restores live updates.
-- The screen remains stable during state changes.
-
-## Step 6 — Record What Was Learned
-
-Before finishing, update this file with:
-- What was implemented
-- Which files changed
-- What concepts were learned
-- What remains incomplete
-- Any bugs or decisions to revisit
-
-## Completion Checklist
-
-- [ ] Reviewed the current implementation.
-- [ ] Improved battery behavior.
-- [ ] Improved altitude and speed simulation.
-- [ ] Considered GPS movement.
-- [ ] Modelled connection behavior more explicitly.
-- [ ] Tested disconnection and recovery, if implemented.
-- [ ] Recorded the session date.
-- [ ] Updated these notes.
-
-## Notes From This Session
-
-### Implemented
-[Fill in after working.]
-
-### Concepts learned
-[Fill in after working.]
-
-### Problems encountered
-[Fill in after working.]
-
-### Next steps
-[Fill in before finishing.]
+**Next steps:**
+*   Proceed to Day 3: Automated Testing.

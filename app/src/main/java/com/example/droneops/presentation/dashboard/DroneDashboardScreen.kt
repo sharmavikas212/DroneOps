@@ -1,66 +1,51 @@
 package com.example.droneops.presentation.dashboard
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun DroneDashboardScreen(
-    viewModel: DroneDashboardViewModel
-) {
+fun DroneDashboardScreen(viewModel: DroneDashboardViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(
-            text = "DroneOps",
-            style = MaterialTheme.typography.headlineLarge
-        )
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text("DroneOps", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 1. Explicit connection state handling
+        val (statusText, statusColor) = when (uiState.connectionState) {
+            ConnectionState.Connecting -> "Connecting..." to Color.Gray
+            ConnectionState.Connected -> "Connected" to Color.Green
+            ConnectionState.Disconnected -> "Disconnected" to Color.Red
+        }
 
         Text(
-            text = "Drone Dashboard",
+            text = "Status: $statusText",
+            color = statusColor,
             style = MaterialTheme.typography.titleMedium
         )
 
-        HorizontalDivider()
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "Connection: ${
-                if (uiState.isConnected) "Connected" else "Disconnected"
-            }",
-            style = MaterialTheme.typography.bodyLarge
-        )
+        // 2. Display telemetry if available, even when disconnected
+        uiState.telemetry?.let { telemetry ->
+            Text("Battery: ${telemetry.batteryPercentage}%")
+            Text("Altitude: ${"%.1f".format(telemetry.altitudeMeters)} m")
+            Text("Speed: ${"%.1f".format(telemetry.speedMetersPerSecond)} m/s")
+            Text("Location: ${"%.4f".format(telemetry.latitude)}, ${"%.4f".format(telemetry.longitude)}")
+        } ?: run {
+            Text("Awaiting telemetry data...")
+        }
 
-        Text(
-            text = "Battery: ${
-                uiState.telemetry?.batteryPercentage ?: "--"
-            }%",
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Text(
-            text = "Altitude: ${
-                uiState.telemetry?.altitudeMeters ?: "--"
-            } m"
-        )
-
-        Text(
-            text = "Speed: ${
-                uiState.telemetry?.speedMetersPerSecond ?: "--"
-            } m/s"
-        )
+        uiState.errorMessage?.let { error ->
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Error: $error", color = Color.Red)
+        }
     }
 }
