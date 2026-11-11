@@ -22,12 +22,10 @@ import com.example.droneops.ui.theme.DroneOpsTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val source = SimulatedTelemetrySource()
-        val repository = DroneTelemetryRepository(source)
 
         enableEdgeToEdge()
 
-        val factory = DroneDashboardViewModelFactory(repository)
+        val factory = DroneDashboardViewModelFactory(applicationContext)
 
         val viewModel = ViewModelProvider(this, factory)
             .get(DroneDashboardViewModel::class.java)
