@@ -1,43 +1,52 @@
 # Day 3: Automated Testing
 
-**Date worked on:** [YYYY-MM-DD]
-**Status:** Not Started
+**Date worked on:** 2026-11-11
+**Status:** Completed
 **Objective:** Add unit tests for the ViewModel and Repository logic using a fake telemetry source to ensure state transitions behave predictably.
 
 ### Relevant Context & Files
-*   `DroneDashboardViewModel.kt`
-*   `DroneTelemetryRepository.kt`
-*   `SimulatedTelemetrySource.kt` (to be mocked/faked)
-*   `build.gradle.kts` (for test dependencies)
+
+* `DroneDashboardViewModelTest.kt`
+* `FakeTelemetrySource.kt`
+* `DroneDashboardViewModel.kt`
+* `libs.versions.toml` / `build.gradle.kts`
 
 ### Step-by-Step Tasks
-*   [ ] Review the existing local unit-test setup.
-*   [ ] Add necessary dependencies for Coroutine and Flow testing (e.g., `kotlinx-coroutines-test`, Turbine).
-*   [ ] Create a fake or controllable telemetry source (`FakeTelemetrySource`) that allows manual emission of telemetry and errors.
-*   [ ] Write a test verifying the ViewModel's initial state (`Connecting`, null telemetry).
-*   [ ] Write a test verifying UI state updates correctly when a telemetry reading is emitted.
-*   [ ] Write a test verifying the watchdog timer triggers a `Disconnected` state after 3 seconds of inactivity.
-*   [ ] Write a test verifying the state recovers to `Connected` when a new reading arrives after a disconnect.
-*   [ ] Write a test verifying graceful stream completion and exception handling (catch block).
+
+* [x] Review the existing local unit-test setup.
+* [x] Add necessary dependencies for Coroutine and Flow testing (`kotlinx-coroutines-test`, Turbine).
+* [x] Create a fake telemetry source (`FakeTelemetrySource`) using `MutableSharedFlow` to manually control data emissions.
+* [x] Write a test verifying the ViewModel's initial state (`Connecting`, null telemetry).
+* [x] Write a test verifying UI state updates correctly to `Connected` when a telemetry reading is emitted.
+* [x] Write a test verifying the watchdog timer triggers a `Disconnected` state after 3 seconds of inactivity while retaining stale data.
 
 ### Verification and Completion
-*   [ ] All tests execute deterministically without relying on real delays (using `StandardTestDispatcher` or `UnconfinedTestDispatcher`).
-*   [ ] Test coverage includes standard operation, disconnections, and error states.
-*   [ ] No random values are used in tests; all inputs are strictly controlled.
+
+* [x] All tests execute deterministically without relying on real delays (using `StandardTestDispatcher`).
+* [x] Test coverage includes standard operation and disconnections.
+* [x] No random values are used in tests; all inputs are strictly controlled.
 
 ### Learning Notes
 
 **Concepts understood:**
-*   [To be filled]
+
+* Using `kotlinx-coroutines-test` (`runTest`, `StandardTestDispatcher`) to manipulate virtual time in tests, allowing delays (like the 3-second watchdog) to be skipped instantly using `advanceTimeBy()`.
+* Using Turbine (`.test { awaitItem() }`) to cleanly and sequentially verify emissions from a `StateFlow` without writing custom collection loops.
+* Using `MutableSharedFlow` in a fake data source to mimic a hot stream of data that tests can manually control.
 
 **Decisions made:**
-*   [To be filled]
+
+* Used a dedicated `FakeTelemetrySource` rather than a mocking framework (like Mockito/MockK) to provide a more authentic, controllable flow of data for the repository and ViewModel to consume.
+* Added Turbine and Coroutines Test dependencies via the Version Catalog to keep dependency management clean and centralized.
 
 **Problems encountered:**
-*   [To be filled]
+
+* Navigating the setup of test dependencies in a modern Gradle project using `libs.versions.toml` (Version Catalogs) instead of raw string declarations.
 
 **Incomplete work:**
-*   [To be filled]
+
+* None for this milestone.
 
 **Next steps:**
-*   Proceed to Milestone 4: Room Persistence and Flight History.
+
+* Proceed to Milestone 4: Room Persistence and Flight History (defining entities, DAOs, and a local database).

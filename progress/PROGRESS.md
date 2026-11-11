@@ -18,8 +18,8 @@ and potentially Hilt.
 ## Milestones
 
 - [x] Day 1 — Basic telemetry dashboard
-- [ ] Day 2 — Improve simulator and connection behavior
-- [ ] Day 3 — Automated tests
+- [X] Day 2 — Improve simulator and connection behavior
+- [X] Day 3 — Automated tests
 - [ ] Day 4 — Local persistence and flight history
 - [ ] Later — UI polish and portfolio presentation
 
