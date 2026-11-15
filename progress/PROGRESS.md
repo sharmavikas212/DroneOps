@@ -1,8 +1,7 @@
 # DroneOps — Progress Tracker
 
 ## Project Goal
-Build a native Android drone-operator dashboard demonstrating practical
-Android engineering skills.
+Build a robust, production-ready Android drone-operator dashboard.
 
 Planned features:
 - Simulated live telemetry
@@ -20,8 +19,9 @@ and potentially Hilt.
 - [x] Day 1 — Basic telemetry dashboard
 - [X] Day 2 — Improve simulator and connection behavior
 - [X] Day 3 — Automated tests
-- [ ] Day 4 — Local persistence and flight history
-- [ ] Later — UI polish and portfolio presentation
+- [x] Day 4 — Local persistence
+- [x] Day 5 — Flight history UI and Navigation
+- [ ] Day 6 — UI polish and UX improvements
 
 ## Detailed Session Notes
 
@@ -29,6 +29,9 @@ Read these files to resume development:
 
 - [Day 1 — Basic Telemetry Dashboard](Day-01.md)
 - [Day 2 — Simulator and Connection Behavior](Day-02.md)
+- [Day 3 — Automated Tests](Day-03.md)
+- [Day 4 — Local Persistence](Day-04.md)
+- [Day 5 — Flight History UI and Navigation](Day-05.md)
 
 ## How to Resume
 
