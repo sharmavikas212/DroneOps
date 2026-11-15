@@ -41,7 +41,7 @@
 
 ### Issue tracker
 
-GitHub Issues. External PRs as request surface: no. See `docs/agents/issue-tracker.md`.
+Ignore the old progress files. Work comes from GitHub issues. External PRs as request surface: no. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
