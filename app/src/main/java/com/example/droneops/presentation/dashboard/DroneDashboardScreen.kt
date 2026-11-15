@@ -1,6 +1,7 @@
 package com.example.droneops.presentation.dashboard
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,7 +12,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun DroneDashboardScreen(viewModel: DroneDashboardViewModel) {
+fun DroneDashboardScreen(
+    viewModel: DroneDashboardViewModel,
+    onNavigateToHistory: () -> Unit
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -46,6 +50,14 @@ fun DroneDashboardScreen(viewModel: DroneDashboardViewModel) {
         uiState.errorMessage?.let { error ->
             Spacer(modifier = Modifier.height(16.dp))
             Text("Error: $error", color = Color.Red)
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = onNavigateToHistory,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("View Flight History")
         }
     }
 }

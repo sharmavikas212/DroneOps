@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.androidx.navigation.compose)
+    implementation("androidx.compose.material:material-icons-extended")
     ksp(libs.room.compiler)
 
 

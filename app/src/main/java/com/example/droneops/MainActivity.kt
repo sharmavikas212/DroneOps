@@ -4,20 +4,29 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.droneops.data.local.DroneDatabase
 import com.example.droneops.data.repository.DroneTelemetryRepository
 import com.example.droneops.data.source.SimulatedTelemetrySource
 import com.example.droneops.presentation.dashboard.DroneDashboardScreen
 import com.example.droneops.presentation.dashboard.DroneDashboardViewModel
 import com.example.droneops.presentation.dashboard.DroneDashboardViewModelFactory
+import com.example.droneops.presentation.history.FlightHistoryScreen
+import com.example.droneops.presentation.history.FlightHistoryViewModel
+import com.example.droneops.presentation.history.FlightHistoryViewModelFactory
 import com.example.droneops.ui.theme.DroneOpsTheme
+
+object NavRoutes {
+    const val DASHBOARD = "dashboard"
+    const val HISTORY = "history"
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,14 +34,45 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
 
-        val factory = DroneDashboardViewModelFactory(applicationContext)
-
-        val viewModel = ViewModelProvider(this, factory)
-            .get(DroneDashboardViewModel::class.java)
-
         setContent {
             DroneOpsTheme {
-                DroneDashboardScreen(viewModel = viewModel)
+                val navController = rememberNavController()
+                val context = applicationContext
+
+                NavHost(
+                    navController = navController,
+                    startDestination = NavRoutes.DASHBOARD
+                ) {
+                    composable(NavRoutes.DASHBOARD) {
+                        val dashboardFactory = DroneDashboardViewModelFactory(context)
+                        val dashboardViewModel = ViewModelProvider(this@MainActivity, dashboardFactory)
+                            .get(DroneDashboardViewModel::class.java)
+
+                        DroneDashboardScreen(
+                            viewModel = dashboardViewModel,
+                            onNavigateToHistory = {
+                                navController.navigate(NavRoutes.HISTORY)
+                            }
+                        )
+                    }
+                    composable(NavRoutes.HISTORY) {
+                        val database = DroneDatabase.getDatabase(context)
+                        val repository = DroneTelemetryRepository(
+                            SimulatedTelemetrySource(),
+                            database.flightRecordDao()
+                        )
+                        val historyFactory = FlightHistoryViewModelFactory(repository)
+                        val historyViewModel = ViewModelProvider(this@MainActivity, historyFactory)
+                            .get(FlightHistoryViewModel::class.java)
+
+                        FlightHistoryScreen(
+                            viewModel = historyViewModel,
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+                }
             }
         }
     }
