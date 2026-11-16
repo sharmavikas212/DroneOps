@@ -1,6 +1,5 @@
 package com.example.droneops.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -11,33 +10,36 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val DarkModeFirstColorScheme = darkColorScheme(
+    primary = CyanPrimary,
+    onPrimary = Slate950,
+    primaryContainer = CyanDark,
+    onPrimaryContainer = TextWhite,
+    
+    secondary = AmberAccent,
+    onSecondary = Slate950,
+    secondaryContainer = AmberDark,
+    onSecondaryContainer = TextWhite,
+    
+    tertiary = AmberAccent,
+    onTertiary = Slate950,
+    
+    background = Slate950,
+    onBackground = TextWhite,
+    
+    surface = Slate900,
+    onSurface = TextWhite,
+    
+    surfaceVariant = Slate800,
+    onSurfaceVariant = TextGray
 )
 
 @Composable
 fun DroneOpsTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Force dark mode first theme, ignoring system settings to maintain outdoor visibility
+    darkTheme: Boolean = true,
+    // Disable dynamic color so we enforce our high-visibility theme
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -45,9 +47,7 @@ fun DroneOpsTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        else -> DarkModeFirstColorScheme
     }
 
     MaterialTheme(
