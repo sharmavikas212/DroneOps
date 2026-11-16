@@ -43,6 +43,10 @@
 
 Ignore the old progress files. Work comes from GitHub issues. External PRs as request surface: no. See `docs/agents/issue-tracker.md`.
 
+**Shell Execution Rules:**
+* **Never use pagers:** You are an automated agent and cannot press 'q'. Always bypass pagers.
+* For Git, always use `git --no-pager <command>` or run `export PAGER=cat` before executing commands that might page output.
+
 ### Triage labels
 
 Canonical triage roles (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
