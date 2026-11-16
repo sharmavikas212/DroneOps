@@ -4,6 +4,26 @@ DroneOps is an Android drone-operations dashboard built with Kotlin and Jetpack 
 
 > **Project status:** DroneOps currently uses a simulated telemetry source. It is designed to demonstrate Android architecture, reactive state management, persistence, and testing; it is not connected to physical drone hardware yet.
 
+## Demo
+
+### Live telemetry dashboard
+
+The dashboard displays connection status, battery, altitude, speed, and GPS coordinates from the simulated telemetry stream.
+
+![DroneOps live telemetry dashboard](https://github.com/user-attachments/assets/2d9b5f6e-16b5-4474-b692-c6985452ff0a)
+
+### Flight history
+
+Completed telemetry sessions are summarized and persisted locally with Room, including duration, maximum altitude, average speed, and minimum battery level.
+
+![DroneOps flight history](https://github.com/user-attachments/assets/32e58ef5-5116-4f00-ab29-5c9cf2bd0a77)
+
+### App walkthrough
+
+Watch the short walkthrough to see the dashboard and flight-history flow in action:
+
+https://github.com/user-attachments/assets/968624d1-5ffe-41c7-a8f4-e061bdca930d
+
 ## Features
 
 - Live telemetry dashboard with:
