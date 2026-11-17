@@ -13,19 +13,23 @@ The screenshots below show the current dashboard and flight-history experience. 
 
 The dashboard displays connection status, battery, altitude, speed, and GPS coordinates from the simulated telemetry stream.
 
-![DroneOps live telemetry dashboard](https://github.com/user-attachments/assets/2d9b5f6e-16b5-4474-b692-c6985452ff0a)
+<img width="1080" height="2400" alt="Screenshot_20261117_154215_DroneOps" src="https://github.com/user-attachments/assets/43e5f600-fb7d-4c14-a429-1186c22c0698" />
+
 
 ### Current flight history
 
 Completed telemetry sessions are summarized and persisted locally with Room, including duration, maximum altitude, average speed, and minimum battery level.
 
-![DroneOps flight history](https://github.com/user-attachments/assets/32e58ef5-5116-4f00-ab29-5c9cf2bd0a77)
+<img width="1080" height="2400" alt="Screenshot_20261117_154301_DroneOps" src="https://github.com/user-attachments/assets/1c3691c1-ef2c-4b9e-91e8-f5b7b7401f3c" />
+
 
 ### App walkthrough video
 
 Watch the short walkthrough to see the dashboard and flight-history flow in action:
 
-https://github.com/user-attachments/assets/968624d1-5ffe-41c7-a8f4-e061bdca930d
+https://github.com/user-attachments/assets/a83be956-66b6-4574-a370-f8bbddd658c8
+
+
 
 ## Features
 
