@@ -22,6 +22,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds
+import com.google.android.gms.maps.model.LatLng
 
 /**
  * Unit tests for [DroneDashboardViewModel].
