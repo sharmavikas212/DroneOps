@@ -1,23 +1,23 @@
 package com.example.droneops.presentation.dashboard
 
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.droneops.data.model.DroneTelemetry
-import androidx.compose.animation.core.*
-import androidx.compose.ui.draw.alpha
-import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.runtime.LaunchedEffect
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -41,73 +41,78 @@ fun StatelessDroneDashboardScreen(
     uiState: DroneDashboardUiState,
     onNavigateToHistory: () -> Unit
 ) {
-    Column(modifier = Modifier.padding(16.dp).fillMaxSize()) {
-        Text("DroneOps", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Column(modifier = Modifier.padding(16.dp).fillMaxSize()) {
+            Text("DroneOps", style = MaterialTheme.typography.headlineMedium)
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // 1. Explicit connection state handling
-        val (statusText, statusColor) = when (uiState.connectionState) {
-            ConnectionState.Connecting -> "Connecting..." to Color.Gray
-            ConnectionState.Connected -> "Connected" to Color.Green
-            ConnectionState.Disconnected -> "Disconnected" to Color.Red
-        }
-        
-        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-            Text(
-                text = "Status: $statusText",
-                color = statusColor,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            PulseIndicator(isLive = uiState.connectionState == ConnectionState.Connected)
-        }
+            // 1. Explicit connection state handling using semantic theme colors
+            val (statusText, statusColor) = when (uiState.connectionState) {
+                ConnectionState.Connecting -> "Connecting..." to MaterialTheme.colorScheme.secondary
+                ConnectionState.Connected -> "Connected" to MaterialTheme.colorScheme.primary
+                ConnectionState.Disconnected -> "Disconnected" to MaterialTheme.colorScheme.error
+            }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        Box(modifier = Modifier.weight(0.6f).fillMaxWidth().testTag("map_container")) {
-            val cameraPositionState = rememberCameraPositionState()
-            
-            LaunchedEffect(uiState.telemetry) {
-                uiState.telemetry?.let {
-                    cameraPositionState.position = CameraPosition.fromLatLngZoom(
-                        LatLng(it.latitude, it.longitude), 15f
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Status: $statusText",
+                    color = statusColor,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                PulseIndicator(isLive = uiState.connectionState == ConnectionState.Connected)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box(modifier = Modifier.weight(0.6f).fillMaxWidth().testTag("map_container")) {
+                val cameraPositionState = rememberCameraPositionState()
+
+                LaunchedEffect(uiState.telemetry) {
+                    uiState.telemetry?.let {
+                        cameraPositionState.position = CameraPosition.fromLatLngZoom(
+                            LatLng(it.latitude, it.longitude), 15f
+                        )
+                    }
+                }
+
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState
+                ) {
+                    Polyline(
+                        points = uiState.trace,
+                        color = MaterialTheme.colorScheme.primary,
+                        width = 8f
                     )
                 }
             }
 
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState
-            ) {
-                Polyline(
-                    points = uiState.trace,
-                    color = Color.Red,
-                    width = 8f
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        Box(modifier = Modifier.weight(0.4f).fillMaxWidth()) {
-            uiState.telemetry?.let { telemetry ->
-                TelemetryGrid(telemetry = telemetry, modifier = Modifier.testTag("telemetry_grid"))
-            } ?: run {
-                Text("Awaiting telemetry data...", modifier = Modifier.testTag("telemetry_grid"))
-            }
-        }
-
-        uiState.errorMessage?.let { error ->
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Error: $error", color = Color.Red)
-        }
 
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(
-            onClick = onNavigateToHistory,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("View Flight History")
+            Box(modifier = Modifier.weight(0.4f).fillMaxWidth()) {
+                uiState.telemetry?.let { telemetry ->
+                    TelemetryGrid(telemetry = telemetry, modifier = Modifier.testTag("telemetry_grid"))
+                } ?: run {
+                    Text("Awaiting telemetry data...", modifier = Modifier.testTag("telemetry_grid"))
+                }
+            }
+
+            uiState.errorMessage?.let { error ->
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Error: $error", color = MaterialTheme.colorScheme.error)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = onNavigateToHistory,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("View Flight History")
+            }
         }
     }
 }
@@ -190,13 +195,11 @@ fun PulseIndicator(isLive: Boolean, modifier: Modifier = Modifier) {
             modifier = modifier
                 .size(12.dp)
                 .alpha(alpha)
-                .background(Color.Green, CircleShape)
+                .background(MaterialTheme.colorScheme.primary, CircleShape)
                 .testTag("pulse_indicator")
         )
     } else {
-        // We still render a box so it takes up space, but it's invisible and untaggable
-        // Actually, the test requires it to NOT be displayed.
-         Box(
+        Box(
             modifier = modifier
                 .size(12.dp)
                 .alpha(0f)
