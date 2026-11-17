@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [FlightRecordEntity::class], version = 1, exportSchema = false)
+@Database(entities = [FlightRecordEntity::class], version = 2, exportSchema = false)
 abstract class DroneDatabase : RoomDatabase() {
 
     // Expose the DAO so the repository can use it
@@ -21,7 +21,9 @@ abstract class DroneDatabase : RoomDatabase() {
                     context.applicationContext,
                     DroneDatabase::class.java,
                     "drone_operations_db"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

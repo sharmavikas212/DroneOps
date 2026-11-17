@@ -12,5 +12,6 @@ data class FlightRecordEntity(
     val durationSeconds: Int,
     val maxAltitudeMeters: Double,
     val averageSpeedMps: Double,
-    val minBatteryPercentage: Int
+    val minBatteryPercentage: Int,
+    val status: String
 )

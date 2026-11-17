@@ -54,7 +54,7 @@ class DroneDashboardViewModel(
                 }
                 .onCompletion { // Edge Case 2: Handle graceful stream end
                     _uiState.update {
-                        it.copy(connectionState = ConnectionState.Disconnected)
+                        it.copy(connectionState = ConnectionState.Disconnected, trace = emptyList())
                     }
                 }
                 .catch { exception ->

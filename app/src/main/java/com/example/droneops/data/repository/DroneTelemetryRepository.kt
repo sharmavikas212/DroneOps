@@ -21,6 +21,8 @@ class DroneTelemetryRepository(
         var avgSpeedSum = 0.0
         var speedCount = 0
         var minBattery = 100
+        var lastAlt = 0.0
+        var lastSpeed = 0.0
 
         return telemetrySource.observeTelemetry()
             .onStart {
@@ -32,6 +34,8 @@ class DroneTelemetryRepository(
                 avgSpeedSum += telemetry.speedMetersPerSecond
                 speedCount++
                 minBattery = minOf(minBattery, telemetry.batteryPercentage)
+                lastAlt = telemetry.altitudeMeters
+                lastSpeed = telemetry.speedMetersPerSecond
             }
             .onCompletion {
                 // When the flow stops (drone disconnects or battery dies), save the record
@@ -39,6 +43,9 @@ class DroneTelemetryRepository(
                     val endTime = System.currentTimeMillis()
                     val duration = ((endTime - startTime) / 1000).toInt()
                     val avgSpeed = avgSpeedSum / speedCount
+                    
+                    val isLandedOrDead = minBattery <= 0 || (lastAlt <= 0.0 && lastSpeed <= 0.0)
+                    val status = if (isLandedOrDead) "Completed" else "Aborted"
 
                     val record = FlightRecordEntity(
                         startTimeMillis = startTime,
@@ -46,7 +53,8 @@ class DroneTelemetryRepository(
                         durationSeconds = duration,
                         maxAltitudeMeters = maxAlt,
                         averageSpeedMps = avgSpeed,
-                        minBatteryPercentage = minBattery
+                        minBatteryPercentage = minBattery,
+                        status = status
                     )
 
                     // NonCancellable ensures the database write completes even if the UI cancels the collection

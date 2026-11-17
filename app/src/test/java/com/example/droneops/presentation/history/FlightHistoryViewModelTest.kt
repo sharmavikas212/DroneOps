@@ -63,7 +63,8 @@ class FlightHistoryViewModelTest {
             durationSeconds = 65, // 01:05
             maxAltitudeMeters = 50.0,
             averageSpeedMps = 12.5,
-            minBatteryPercentage = 80
+            minBatteryPercentage = 80,
+            status = "Completed"
         )
         fakeDao.insertFlightRecord(record)
 
@@ -80,6 +81,7 @@ class FlightHistoryViewModelTest {
             val item = successState.items[0]
             assertEquals(1L, item.id)
             assertEquals("01:05", item.formattedDuration)
+            assertEquals("Completed", item.status)
             assertEquals(50.0, item.maxAltitudeMeters, 0.001)
             assertEquals(12.5, item.averageSpeedMps, 0.001)
             assertEquals(80, item.minBatteryPercentage)

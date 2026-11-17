@@ -40,7 +40,8 @@ class FlightHistoryViewModel(
                                 formattedDuration = formatDuration(entity.durationSeconds),
                                 maxAltitudeMeters = entity.maxAltitudeMeters,
                                 averageSpeedMps = entity.averageSpeedMps,
-                                minBatteryPercentage = entity.minBatteryPercentage
+                                minBatteryPercentage = entity.minBatteryPercentage,
+                                status = entity.status
                             )
                         }
                         _uiState.value = FlightHistoryUiState.Success(items)

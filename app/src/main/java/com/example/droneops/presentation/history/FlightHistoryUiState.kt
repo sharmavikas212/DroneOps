@@ -6,7 +6,8 @@ data class FlightHistoryItem(
     val formattedDuration: String,
     val maxAltitudeMeters: Double,
     val averageSpeedMps: Double,
-    val minBatteryPercentage: Int
+    val minBatteryPercentage: Int,
+    val status: String
 )
 
 sealed interface FlightHistoryUiState {
