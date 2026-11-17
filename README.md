@@ -1,24 +1,27 @@
 # DroneOps
 
-DroneOps is an Android drone-operations dashboard built with Kotlin and Jetpack Compose. It simulates live drone telemetry, shows connection health, and records completed flight sessions for later review.
+DroneOps is an Android drone-operations dashboard built with Kotlin and Jetpack Compose. The latest build presents live simulated telemetry, connection health, GPS flight tracking, and persistent flight-session history in a dark Material 3 interface.
 
 > **Project status:** DroneOps currently uses a simulated telemetry source. It is designed to demonstrate Android architecture, reactive state management, persistence, and testing; it is not connected to physical drone hardware yet.
 
-## Demo
+## Latest demo
 
-### Live telemetry dashboard
+The screenshots below show the current dashboard and flight-history experience. The app displays live telemetry, a mapped flight path, battery status, and saved flight summaries.
+
+
+### Current telemetry dashboard
 
 The dashboard displays connection status, battery, altitude, speed, and GPS coordinates from the simulated telemetry stream.
 
 ![DroneOps live telemetry dashboard](https://github.com/user-attachments/assets/2d9b5f6e-16b5-4474-b692-c6985452ff0a)
 
-### Flight history
+### Current flight history
 
 Completed telemetry sessions are summarized and persisted locally with Room, including duration, maximum altitude, average speed, and minimum battery level.
 
 ![DroneOps flight history](https://github.com/user-attachments/assets/32e58ef5-5116-4f00-ab29-5c9cf2bd0a77)
 
-### App walkthrough
+### App walkthrough video
 
 Watch the short walkthrough to see the dashboard and flight-history flow in action:
 
@@ -26,7 +29,7 @@ https://github.com/user-attachments/assets/968624d1-5ffe-41c7-a8f4-e061bdca930d
 
 ## Features
 
-- Live telemetry dashboard with:
+- Live telemetry dashboard with a mapped flight path and:
   - Battery percentage
   - Altitude
   - Speed
@@ -38,6 +41,7 @@ https://github.com/user-attachments/assets/968624d1-5ffe-41c7-a8f4-e061bdca930d
 - Automatic flight-session summaries when a telemetry stream ends
 - Local flight-history persistence using Room
 - Navigation between the dashboard and flight-history screens
+- Dark Material 3 UI for the current Android dashboard experience
 - Unit tests for ViewModel state transitions, connection loss, and history formatting
 
 ## Architecture
