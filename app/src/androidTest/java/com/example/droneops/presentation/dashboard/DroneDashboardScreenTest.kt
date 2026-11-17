@@ -30,8 +30,8 @@ class DroneDashboardScreenTest {
             )
         }
 
-        // We expect a map placeholder and a telemetry grid
-        composeTestRule.onNodeWithTag("map_placeholder").assertIsDisplayed()
+        // We expect a map container and a telemetry grid
+        composeTestRule.onNodeWithTag("map_container").assertIsDisplayed()
         composeTestRule.onNodeWithTag("telemetry_grid").assertIsDisplayed()
     }
 }

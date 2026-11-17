@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
+import com.google.android.gms.maps.model.LatLng
 
 class DroneDashboardViewModel(
     private val repository: DroneTelemetryRepository
@@ -41,7 +42,8 @@ class DroneDashboardViewModel(
                             telemetry = telemetry,
                             connectionState = ConnectionState.Connected,
                             isLoading = false,
-                            errorMessage = null
+                            errorMessage = null,
+                            trace = it.trace + LatLng(telemetry.latitude, telemetry.longitude)
                         )
                     }
                     // Reset the 3-second timer on every successful reading
@@ -49,7 +51,7 @@ class DroneDashboardViewModel(
                 }
                 .onCompletion { // Edge Case 2: Handle graceful stream end
                     _uiState.update {
-                        it.copy(connectionState = ConnectionState.Disconnected)
+                        it.copy(connectionState = ConnectionState.Disconnected, trace = emptyList())
                     }
                 }
                 .catch { exception ->
@@ -58,7 +60,8 @@ class DroneDashboardViewModel(
                             connectionState = ConnectionState.Disconnected,
                             isLoading = false,
                             errorMessage = exception.message
-                                ?:"Unable to receive Telemetry"
+                                ?:"Unable to receive Telemetry",
+                            trace = emptyList()
                         )
                     }
                 }
@@ -73,7 +76,7 @@ class DroneDashboardViewModel(
             delay(3_000.milliseconds) // Wait 3 seconds
             // If we reach this line, the timer wasn't cancelled by a new telemetry reading
             _uiState.update {
-                it.copy(connectionState = ConnectionState.Disconnected)
+                it.copy(connectionState = ConnectionState.Disconnected, trace = emptyList())
             }
         }
     }

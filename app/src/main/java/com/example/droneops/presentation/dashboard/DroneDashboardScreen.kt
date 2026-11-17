@@ -17,6 +17,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.runtime.LaunchedEffect
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Polyline
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun DroneDashboardScreen(
@@ -58,8 +64,27 @@ fun StatelessDroneDashboardScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
         
-        Box(modifier = Modifier.weight(0.6f).fillMaxWidth().testTag("map_placeholder")) {
-            Text("Map Placeholder")
+        Box(modifier = Modifier.weight(0.6f).fillMaxWidth().testTag("map_container")) {
+            val cameraPositionState = rememberCameraPositionState()
+            
+            LaunchedEffect(uiState.telemetry) {
+                uiState.telemetry?.let {
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(
+                        LatLng(it.latitude, it.longitude), 15f
+                    )
+                }
+            }
+
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState
+            ) {
+                Polyline(
+                    points = uiState.trace,
+                    color = Color.Red,
+                    width = 8f
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))

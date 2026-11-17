@@ -117,6 +117,34 @@ class DroneDashboardViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
+
+    @Test
+    fun `trace updates when telemetry is received and clears on completion`() = runTest {
+        viewModel.uiState.test {
+            val initialState = awaitItem()
+            assertEquals(emptyList<LatLng>(), initialState.trace)
+
+            // Emit some telemetry
+            val testTelemetry1 = DroneTelemetry(100, 10.0, 5.0, -33.0, 151.0)
+            fakeSource.emitTelemetry(testTelemetry1)
+            val state1 = awaitItem()
+            assertEquals(1, state1.trace.size)
+            assertEquals(-33.0, state1.trace[0].latitude, 0.001)
+
+            val testTelemetry2 = DroneTelemetry(100, 10.0, 5.0, -33.1, 151.1)
+            fakeSource.emitTelemetry(testTelemetry2)
+            val state2 = awaitItem()
+            assertEquals(2, state2.trace.size)
+
+            // Signal completion to simulate flight end
+            fakeSource.completeStream()
+            val state3 = awaitItem()
+            assertEquals(ConnectionState.Disconnected, state3.connectionState)
+            assertEquals(emptyList<LatLng>(), state3.trace)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
 }
 
 /**
