@@ -38,12 +38,15 @@ class DroneDashboardViewModel(
             repository.observeTelemetry()
                 .onEach { telemetry ->
                     _uiState.update {
+                        // Check if the drone has landed or battery is dead
+                        val isLandedOrDead = telemetry.batteryPercentage <= 0 || (telemetry.altitudeMeters <= 0.0 && telemetry.speedMetersPerSecond <= 0.0)
+                        
                         it.copy(
                             telemetry = telemetry,
                             connectionState = ConnectionState.Connected,
                             isLoading = false,
                             errorMessage = null,
-                            trace = it.trace + LatLng(telemetry.latitude, telemetry.longitude)
+                            trace = if (isLandedOrDead) emptyList() else it.trace + LatLng(telemetry.latitude, telemetry.longitude)
                         )
                     }
                     // Reset the 3-second timer on every successful reading
@@ -51,7 +54,7 @@ class DroneDashboardViewModel(
                 }
                 .onCompletion { // Edge Case 2: Handle graceful stream end
                     _uiState.update {
-                        it.copy(connectionState = ConnectionState.Disconnected, trace = emptyList())
+                        it.copy(connectionState = ConnectionState.Disconnected)
                     }
                 }
                 .catch { exception ->
@@ -60,8 +63,8 @@ class DroneDashboardViewModel(
                             connectionState = ConnectionState.Disconnected,
                             isLoading = false,
                             errorMessage = exception.message
-                                ?:"Unable to receive Telemetry",
-                            trace = emptyList()
+                                ?:"Unable to receive Telemetry"
+                            // Trace is not cleared on random errors either
                         )
                     }
                 }
@@ -76,7 +79,7 @@ class DroneDashboardViewModel(
             delay(3_000.milliseconds) // Wait 3 seconds
             // If we reach this line, the timer wasn't cancelled by a new telemetry reading
             _uiState.update {
-                it.copy(connectionState = ConnectionState.Disconnected, trace = emptyList())
+                it.copy(connectionState = ConnectionState.Disconnected) // Do not clear the trace on temporary disconnect
             }
         }
     }
