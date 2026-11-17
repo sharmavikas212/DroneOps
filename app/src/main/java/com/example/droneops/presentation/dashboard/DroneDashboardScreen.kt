@@ -16,6 +16,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.ui.draw.alpha
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.Arrangement
 
 @Composable
 fun DroneDashboardScreen(
@@ -88,11 +89,61 @@ fun StatelessDroneDashboardScreen(
 
 @Composable
 fun TelemetryGrid(telemetry: DroneTelemetry, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        Text("Battery: ${telemetry.batteryPercentage}%")
-        Text("Altitude: ${"%.1f".format(telemetry.altitudeMeters)} m")
-        Text("Speed: ${"%.1f".format(telemetry.speedMetersPerSecond)} m/s")
-        Text("Location: ${"%.4f".format(telemetry.latitude)}, ${"%.4f".format(telemetry.longitude)}")
+    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            TelemetryTile(
+                label = "Altitude",
+                value = "${"%.1f".format(telemetry.altitudeMeters)} m",
+                modifier = Modifier.weight(1f)
+            )
+            TelemetryTile(
+                label = "Speed",
+                value = "${"%.1f".format(telemetry.speedMetersPerSecond)} m/s",
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            TelemetryTile(
+                label = "Battery",
+                value = "${telemetry.batteryPercentage}%",
+                modifier = Modifier.weight(1f)
+            )
+            TelemetryTile(
+                label = "Location",
+                value = "${"%.4f".format(telemetry.latitude)}, ${"%.4f".format(telemetry.longitude)}",
+                isSecondary = true,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+fun TelemetryTile(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+    isSecondary: Boolean = false
+) {
+    val backgroundColor = MaterialTheme.colorScheme.surfaceVariant
+    Box(
+        modifier = modifier
+            .background(backgroundColor, androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+            .padding(16.dp)
+    ) {
+        Column {
+            Text(
+                text = label,
+                style = if (isSecondary) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = value,
+                style = if (isSecondary) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 

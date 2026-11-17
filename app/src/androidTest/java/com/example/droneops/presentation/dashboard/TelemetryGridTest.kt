@@ -27,8 +27,8 @@ class TelemetryGridTest {
         composeTestRule.waitForIdle()
 
         // Verify primary metrics are displayed with units
-        composeTestRule.onNodeWithText("Altitude: 10.0 m").assertIsDisplayed() // Altitude
-        composeTestRule.onNodeWithText("Speed: 5.0 m/s").assertIsDisplayed() // Speed
-        composeTestRule.onNodeWithText("Battery: 100%").assertIsDisplayed() // Battery
+        composeTestRule.onNodeWithText("10.0 m").assertIsDisplayed() // Altitude
+        composeTestRule.onNodeWithText("5.0 m/s").assertIsDisplayed() // Speed
+        composeTestRule.onNodeWithText("100%").assertIsDisplayed() // Battery
     }
 }
